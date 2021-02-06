@@ -42,7 +42,7 @@ public class BookService {
         if (name == null) {
             throw new BookNameIsNullException();
         }
-        if (name.length() > 1000) {
+        if (name.length() > 10) {
             throw new BookNameIsTooLongException();
         }
         return name.trim();
