@@ -107,5 +107,7 @@ public class BookServiceTest {
         createBookDto.setRating(7);
         Book actual = bookService.createBook(createBookDto);
         assertEquals(null, actual);
+
+
     }
 }
