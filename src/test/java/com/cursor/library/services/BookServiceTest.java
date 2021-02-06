@@ -67,45 +67,4 @@ public class BookServiceTest {
         );
     }
 
-    @Test
-    void getValidatedBookShouldBookNameIsTooLongException() {
-        String tooLongString = "abcdefghijk";
-        assertThrows(BookNameIsTooLongException.class,
-                () -> bookService.getValidatedBookName(tooLongString));
-    }
-
-    @Test
-    void getValidatedShouldTrimString() {
-        String example = "trim";
-        String errorString = " trim ";
-        String actual = bookService.getValidatedBookName(errorString);
-        assertEquals(example, actual);
-    }
-
-    @Test
-    void getBookByIdTestByName() {
-        String id = "random_id_value_1";
-        Book example = new Book();
-        example.setName("Anna Karenina");
-        example.setAuthors(List.of("Leo Tolstoy"));
-        example.setDescription("");
-        example.setYearOfPublication(1877);
-        example.setNumberOfWords(864368);
-        example.setRating(8);
-        Book actual = bookService.getById(id);
-        assertEquals(example.getName(), actual.getName());
-    }
-
-    @Test
-    public void createBookTest() {
-        CreateBookDto createBookDto = new CreateBookDto();
-        createBookDto.setName("Doctor Who");
-        createBookDto.setAuthors(List.of("Dmitriy Donskoy"));
-        createBookDto.setDescription("Book about love");
-        createBookDto.setYearOfPublication(2020);
-        createBookDto.setNumberOfWords(325340);
-        createBookDto.setRating(7);
-        Book actual = bookService.createBook(createBookDto);
-        assertEquals(null, actual);
-    }
 }
