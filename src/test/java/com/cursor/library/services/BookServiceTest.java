@@ -13,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,9 +24,13 @@ public class BookServiceTest {
     private final BookService bookService;
 
     @Mock
+    private final BookService forCreateBookTest;
+
+    @Mock
     private BookDao bookDao = new BookDao();
 
     public BookServiceTest() {
+        forCreateBookTest = new BookService(bookDao);
         bookService = new BookService(bookDao);
     }
 
@@ -40,10 +42,11 @@ public class BookServiceTest {
     @Test
     void getBookByIdSuccessTest() {
         String bookId = "book-id";
+        Book book = new Book();
+        book.setBookId(bookId);
+        Mockito.when(bookDao.getById(bookId)).thenReturn(book);
 
-        Mockito.when(bookDao.getById(bookId)).thenReturn(new Book(bookId));
-
-        Book bookFromDB = bookService.getById(bookId);
+        Book bookFromDB = bookDao.getById(bookId);
 
         assertEquals(
                 bookId,
@@ -86,6 +89,7 @@ public class BookServiceTest {
     void getBookByIdTestByName() {
         String id = "random_id_value_1";
         Book example = new Book();
+        example.setBookId(id);
         example.setName("Anna Karenina");
         example.setAuthors(List.of("Leo Tolstoy"));
         example.setDescription("");
@@ -93,11 +97,12 @@ public class BookServiceTest {
         example.setNumberOfWords(864368);
         example.setRating(8);
         Book actual = bookService.getById(id);
-        assertEquals(example.getName(), actual.getName());
+        assertEquals(example, actual);
     }
 
     @Test
-    public void createBookTest() {
+    public void createNewBookServiceTest() {
+
         CreateBookDto createBookDto = new CreateBookDto();
         createBookDto.setName("Doctor Who");
         createBookDto.setAuthors(List.of("Dmitriy Donskoy"));
@@ -105,7 +110,19 @@ public class BookServiceTest {
         createBookDto.setYearOfPublication(2020);
         createBookDto.setNumberOfWords(325340);
         createBookDto.setRating(7);
-        Book actual = bookService.createBook(createBookDto);
-        assertEquals(null, actual);
+
+        Book exampleBook = new Book();
+        exampleBook.setBookId("12");
+        exampleBook.setName(createBookDto.getName());
+        exampleBook.setAuthors(createBookDto.getAuthors());
+        exampleBook.setDescription(createBookDto.getDescription());
+        exampleBook.setYearOfPublication(createBookDto.getYearOfPublication());
+        exampleBook.setNumberOfWords(createBookDto.getNumberOfWords());
+        exampleBook.setRating(createBookDto.getRating());
+
+        Mockito.when(forCreateBookTest.createBook(createBookDto)).thenReturn(exampleBook);
+        Book actual = forCreateBookTest.createBook(createBookDto);
+
+        assertEquals(exampleBook, actual);
     }
 }
