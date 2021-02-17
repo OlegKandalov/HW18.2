@@ -1,4 +1,4 @@
-package com.cursor.library.services;
+package com.cursor.library.daos;
 
 import com.cursor.library.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;

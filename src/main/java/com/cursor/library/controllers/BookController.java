@@ -4,10 +4,12 @@ import com.cursor.library.daos.BookDao;
 import com.cursor.library.models.Book;
 import com.cursor.library.models.CreateBookDto;
 import com.cursor.library.services.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,17 +22,14 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class BookController {
 
     private final BookDao bookDao;
     private final BookService bookService;
 
-    public BookController(BookDao bookDao, BookService bookService) {
-        this.bookDao = bookDao;
-        this.bookService = bookService;
-    }
-
     @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<Book>> getAll(
             @RequestParam(value = "sortBy", defaultValue = "byName", required = false) String sortBy,
             @RequestParam(value = "limit", defaultValue = "10", required = false) String limit,
@@ -47,6 +46,7 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @Secured("ROLE_LIBRARIAN")
     public ResponseEntity<Book> createBook(@RequestBody CreateBookDto createBookDto) {
         Book newBook = new Book(
                 UUID.randomUUID().toString(),
@@ -62,6 +62,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/books/{bookId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured({"ROLE_LIBRARIAN", "ROLE_GUEST"})
     public ResponseEntity<Book> getById(
             @PathVariable(value = "bookId") String bookId
     ) {
@@ -73,6 +74,7 @@ public class BookController {
     }
 
     @DeleteMapping(value = "/books/{bookId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Book> deleteById(
             @PathVariable(value = "bookId") String bookId
     ) {
