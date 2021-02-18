@@ -28,8 +28,14 @@ public class LibraryApplication {
 	public void addUsers() {
 		User user1 = new User();
 		user1.setUsername("oleg");
-		user1.setPassword("123");
+		user1.setPassword(passwordEncoder.encode("111"));
 		user1.setPermissions(Set.of(UserPermission.ROLE_ADMIN));
 		userRepository.save(user1);
+
+		User user2 = new User();
+		user2.setUsername("guest");
+		user2.setPassword(passwordEncoder.encode("222"));
+		user2.setPermissions(Set.of(UserPermission.ROLE_GUEST));
+		userRepository.save(user2);
 	}
 }
